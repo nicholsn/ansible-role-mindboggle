@@ -22,7 +22,9 @@ There is an option to use a local installation of FreeSurfer and ANTS
 Role Variables
 --------------
 
+- build_freesurfer
 - freesurfer_dir
+- build_ants
 - ants_dir
 
 Dependencies
