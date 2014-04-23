@@ -1,6 +1,9 @@
 ---
 # defaults file for ansible-role-mindboggle
 
+# Set Mindboggle home directory
+- mindboggle_home: /mindboggle
+
 # Configure Freesurfer
 - build_freesurfer: False
 - freesurfer_dir: /usr/local/freesurfer

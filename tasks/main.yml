@@ -1,2 +1,48 @@
 ---
 # tasks file for ansible-role-mindboggle
+
+- name: Install apt-get dependencies.
+  apt: name={{ item }} state=present update_cache=yes
+  with_items:
+  - git
+
+- name: Install conda python dependencies.
+  sudo: False
+  shell: {{ miniconda_home }}/bin/conda install {{ item }} --yes -q executable=/bin/bash
+  with_items:
+  - cmake 
+  - vtk 
+  - numpy 
+  - scipy 
+  - networkx 
+  - traits 
+  - nose
+
+- name: Install nipype python package and dependencies.
+  sudo: False
+  pip: name={{ item }} state=present
+  with_items:
+  - nibabel
+  - "git+https://github.com/trungdong/prov.git@rdf"
+  - nipype
+
+- name: Clone Mindboggle from Github.
+  sudo: False
+  git: repo=git://github.com/binarybottle/mindboggle.git
+       dest={{ mindboggle_home }}
+
+- name: Install Mindboggle Python software.
+  sudo: False
+  command: {{ miniconda_home }}/bin/python setup.py install
+           chdir={{ mindboggle_home }}
+           executable=/bin/bash
+
+- name: Compile Mindboggle C++ code.
+  sudo: False
+  command: cmake .. && make
+           chdir={{ mindboggle_home }}/mindboggle_tools/bin/
+           executable=/bin/bash
+
+- name: Set environment variables.
+  sudo: False
+  command:
