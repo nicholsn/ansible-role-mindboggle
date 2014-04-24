@@ -4,11 +4,13 @@
 - name: Install apt-get dependencies.
   apt: name={{ item }} state=present update_cache=yes
   with_items:
+  - build-essential
   - git
+  - make
 
 - name: Install conda python dependencies.
   sudo: False
-  shell: {{ miniconda_home }}/bin/conda install {{ item }} --yes -q executable=/bin/bash
+  shell: "{{ miniconda_home }}/bin/conda install {{ item }} --yes -q executable=/bin/bash"
   with_items:
   - cmake 
   - vtk 
@@ -20,11 +22,19 @@
 
 - name: Install nipype python package and dependencies.
   sudo: False
-  pip: name={{ item }} state=present
+  pip: name={{ item }} state=present executable={{ miniconda_home }}/bin/pip
   with_items:
   - nibabel
   - "git+https://github.com/trungdong/prov.git@rdf"
   - nipype
+
+- name: Set environment variables.
+  sudo: False
+  command: echo "{{ item }}" >> ~/.bashrc
+  with_items:
+  - "export MINDBOGGLE_TOOLS={{ mindboggle_home }}/mindboggle_tools/bin/"
+  - "export PATH=$PATH:$MINDBOGGLE_TOOLS"
+  - "export DYLD_LIBRARY_PATH={{ miniconda_home }}/lib/vtk-5.10:${DYLD_LIBRARY_PATH}"
 
 - name: Clone Mindboggle from Github.
   sudo: False
@@ -33,16 +43,11 @@
 
 - name: Install Mindboggle Python software.
   sudo: False
-  command: {{ miniconda_home }}/bin/python setup.py install
-           chdir={{ mindboggle_home }}
-           executable=/bin/bash
+  pip: name={{ mindboggle_home }} state=present executable={{ miniconda_home }}/bin/python
 
-- name: Compile Mindboggle C++ code.
+- name: Compile Mindboggle C++ code with cmake.
   sudo: False
-  command: cmake .. && make
-           chdir={{ mindboggle_home }}/mindboggle_tools/bin/
-           executable=/bin/bash
-
-- name: Set environment variables.
-  sudo: False
-  command:
+  command: "{{ item }} chdir={{ mindboggle_home }}/mindboggle_tools/bin/ executable=/bin/bash"
+  with_items:
+  - cmake {{ mindboggle_home }}/mindboggle_tools
+  - make    
