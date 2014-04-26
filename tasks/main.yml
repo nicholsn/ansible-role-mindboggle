@@ -22,7 +22,7 @@
 
 - name: Install nipype python package and dependencies.
   sudo: False
-  pip: name={{ item }} state=present executable={{ miniconda_home }}/bin/pip
+  shell: "{{ miniconda_home }}/bin/pip install -U {{ item }}"
   with_items:
   - nibabel
   - "git+https://github.com/trungdong/prov.git@rdf"
@@ -30,11 +30,11 @@
 
 - name: Set environment variables.
   sudo: False
-  command: echo "{{ item }}" >> ~/.bashrc
+  shell: "echo '{{ item }}' >> ~/.bashrc"
   with_items:
   - "export MINDBOGGLE_TOOLS={{ mindboggle_home }}/mindboggle_tools/bin/"
   - "export PATH=$PATH:$MINDBOGGLE_TOOLS"
-#  - "export DYLD_LIBRARY_PATH={{ miniconda_home }}/lib/vtk-5.10:${DYLD_LIBRARY_PATH}"
+  - "export DYLD_LIBRARY_PATH={{ miniconda_home }}/lib/vtk-5.10"
 
 - name: Clone Mindboggle from Github.
   sudo: False
