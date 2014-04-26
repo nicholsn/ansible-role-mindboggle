@@ -47,7 +47,7 @@
 
 - name: Compile Mindboggle C++ code with cmake.
   sudo: False
-  command: "{{ item }} chdir={{ mindboggle_home }}/mindboggle_tools/bin/ executable=/bin/bash"
+  shell: "{{ item }} chdir={{ mindboggle_home }}/mindboggle_tools/bin/ executable=/bin/bash"
   with_items:
-  - cmake {{ mindboggle_home }}/mindboggle_tools
+  - {{ miniconda_home }}/bin/cmake {{ mindboggle_home }}/mindboggle_tools
   - make    
