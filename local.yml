@@ -1,7 +1,7 @@
 ---
 # Playbook for virtuoso container
 
-- hosts: virtuoso-local
+- hosts: all
   remote_user: vagrant
   sudo: yes
 

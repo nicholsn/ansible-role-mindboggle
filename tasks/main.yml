@@ -34,7 +34,7 @@
   with_items:
   - "export MINDBOGGLE_TOOLS={{ mindboggle_home }}/mindboggle_tools/bin/"
   - "export PATH=$PATH:$MINDBOGGLE_TOOLS"
-  - "export DYLD_LIBRARY_PATH={{ miniconda_home }}/lib/vtk-5.10:${DYLD_LIBRARY_PATH}"
+#  - "export DYLD_LIBRARY_PATH={{ miniconda_home }}/lib/vtk-5.10:${DYLD_LIBRARY_PATH}"
 
 - name: Clone Mindboggle from Github.
   sudo: False
@@ -43,7 +43,7 @@
 
 - name: Install Mindboggle Python software.
   sudo: False
-  pip: name={{ mindboggle_home }} state=present executable={{ miniconda_home }}/bin/python
+  pip: name={{ mindboggle_home }} state=present executable=/bin/bash
 
 - name: Compile Mindboggle C++ code with cmake.
   sudo: False
