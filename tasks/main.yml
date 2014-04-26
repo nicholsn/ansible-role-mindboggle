@@ -22,7 +22,7 @@
 
 - name: Install nipype python package and dependencies.
   sudo: False
-  shell: "{{ miniconda_home }}/bin/pip install -U {{ item }}"
+  shell: "{{ miniconda_home }}/bin/pip install -U {{ item }} executable=/bin/bash"
   with_items:
   - nibabel
   - "git+https://github.com/trungdong/prov.git@rdf"
@@ -43,7 +43,7 @@
 
 - name: Install Mindboggle Python software.
   sudo: False
-  pip: name={{ mindboggle_home }} state=present executable=/bin/bash
+  shell: "{{ miniconda_home }}/bin/pip install -U {{ mindboggle_home }} executable=/bin/bash"
 
 - name: Compile Mindboggle C++ code with cmake.
   sudo: False
