@@ -49,5 +49,5 @@
   sudo: False
   shell: "{{ item }} chdir={{ mindboggle_home }}/mindboggle_tools/bin/ executable=/bin/bash"
   with_items:
-  - {{ miniconda_home }}/bin/cmake {{ mindboggle_home }}/mindboggle_tools
+  - "{{ miniconda_home }}/bin/cmake {{ mindboggle_home }}/mindboggle_tools"
   - make    
