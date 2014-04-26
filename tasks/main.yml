@@ -7,6 +7,8 @@
   - build-essential
   - git
   - make
+  - libxt6
+  - libgl1-mesa-glx
 
 - name: Install conda python dependencies.
   sudo: False
