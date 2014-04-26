@@ -52,4 +52,19 @@
   shell: "{{ item }} chdir={{ mindboggle_home }}/mindboggle_tools/bin/ executable=/bin/bash"
   with_items:
   - "{{ miniconda_home }}/bin/cmake {{ mindboggle_home }}/mindboggle_tools"
-  - make    
+  - make
+
+- name: Create the Freesurfer and ANTs directories.
+  sudo: True
+  file: path={{ item }} state=directory owner={{ remote_user }}
+  with_items:
+  - /usr/local/freesurfer
+  - /usr/local/ants
+
+- name: Set Freesurfer and ANTs environment variables.
+  sudo: False
+  shell: "echo '{{ item }}' >> ~/.bashrc"
+  with_items:
+  - "export FREESURFER_HOME=/usr/local/freesurfer"
+  - "source $FREESURFER_HOME/SetUpFreeSurfer.sh"
+  - "export PATH=$PATH:/usr/local/ants"
