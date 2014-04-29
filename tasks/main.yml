@@ -4,7 +4,7 @@
 - name: Install apt-get dependencies.
   apt: name={{ item }} state=present update_cache=yes
   with_items:
-  - build-essential
+  - g++
   - git
   - make
   - libxt6
@@ -21,14 +21,17 @@
   - networkx 
   - traits 
   - nose
+  - ipython-notebook
+  - matplotlib
 
 - name: Install nipype python package and dependencies.
   sudo: False
   shell: "{{ miniconda_home }}/bin/pip install -U {{ item }} executable=/bin/bash"
   with_items:
-  - nibabel
-  - "git+https://github.com/trungdong/prov.git@rdf"
-  - nipype
+  - nibabel --use-mirrors
+  - "https://github.com/trungdong/prov/archive/rdf.zip"
+  - "https://github.com/nipy/nipype/archive/master.zip"
+  - "https://github.com/RDFLib/rdflib/archive/master.zip"
 
 - name: Set environment variables.
   sudo: False
@@ -54,17 +57,22 @@
   - "{{ miniconda_home }}/bin/cmake {{ mindboggle_home }}/mindboggle_tools"
   - make
 
-- name: Create the Freesurfer and ANTs directories.
-  sudo: True
-  file: path={{ item }} state=directory owner={{ remote_user }}
+- name: Create the dependency directories used for sync in vagrant.
+  sudo: false
+  file: path={{ item }} state=directory owner={{ ansible_ssh_user }}
   with_items:
-  - /usr/local/freesurfer
-  - /usr/local/ants
+  - /home/{{ ansible_ssh_user }}/freesurfer
+  - /home/{{ ansible_ssh_user }}/ants
+  - /home/{{ ansible_ssh_user }}/mindboggled
+  - /home/{{ ansible_ssh_user }}/freesurfer_subjects
+  - /home/{{ ansible_ssh_user }}/ants_subjects
+  - /home/{{ ansible_ssh_user }}/atlases
+  - /home/{{ ansible_ssh_user }}/dependencies
 
 - name: Set Freesurfer and ANTs environment variables.
   sudo: False
   shell: "echo '{{ item }}' >> ~/.bashrc"
   with_items:
-  - "export FREESURFER_HOME=/usr/local/freesurfer"
+  - "export FREESURFER_HOME=/home/{{ ansible_ssh_user }}/freesurfer"
   - "source $FREESURFER_HOME/SetUpFreeSurfer.sh"
-  - "export PATH=$PATH:/usr/local/ants"
+  - "export PATH=$PATH:/home/{{ ansible_ssh_user }}/ants"
